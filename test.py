@@ -161,6 +161,7 @@ def test(data,
                 # [{"image_id": 42, "category_id": 18, "bbox": [258.15, 41.29, 348.26, 243.78], "score": 0.236}, ...
                 image_id = int(path.stem) if path.stem.isnumeric() else path.stem
                 box = xyxy2xywh(predn[:, :4])  # xywh
+                
                 box[:, :2] -= box[:, 2:] / 2  # xy center to top-left corner
                 for p, b in zip(pred.tolist(), box.tolist()):
                     jdict.append({'image_id': image_id,
@@ -205,10 +206,10 @@ def test(data,
             stats.append((correct.cpu(), pred[:, 4].cpu(), pred[:, 5].cpu(), tcls))
 
         # Plot images
-        if plots and batch_i < 3:
-            f = save_dir / f'test_batch{batch_i}_labels.jpg'  # labels
-            Thread(target=plot_images, args=(img, targets, paths, f, names), daemon=True).start()
-            f = save_dir / f'test_batch{batch_i}_pred.jpg'  # predictions
+        if plots and batch_i < 99:
+            # f = save_dir / f'test_batch{batch_i}_labels.jpg'  # labels
+            # Thread(target=plot_images, args=(img, targets, paths, f, names), daemon=True).start()
+            f = save_dir / f'test/test_batch{batch_i}_pred.jpg'  # predictions
             Thread(target=plot_images, args=(img, output_to_target(output), paths, f, names), daemon=True).start()
 
     # Compute statistics

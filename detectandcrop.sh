@@ -1,0 +1,1 @@
+python detectandcrop.py --source ./data/custom/images/test1 --weights ./runs/train/s/weights/best.pt --name s

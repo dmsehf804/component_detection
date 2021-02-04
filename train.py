@@ -442,7 +442,7 @@ if __name__ == '__main__':
     parser.add_argument('--nosave', action='store_true', help='only save final checkpoint')
     parser.add_argument('--notest', action='store_true', help='only test final epoch')
     parser.add_argument('--noautoanchor', action='store_true', help='disable autoanchor check')
-    parser.add_argument('--evolve', action='store_true', help='evolve hyperparameters')
+    parser.add_argument('--evolve', action='store_true', help='evolve hyperparameters', default=False)
     parser.add_argument('--bucket', type=str, default='', help='gsutil bucket')
     parser.add_argument('--cache-images', action='store_true', help='cache images for faster training')
     parser.add_argument('--image-weights', action='store_true', help='use weighted image selection for training')
@@ -454,7 +454,7 @@ if __name__ == '__main__':
     parser.add_argument('--local_rank', type=int, default=-1, help='DDP parameter, do not modify')
     parser.add_argument('--log-imgs', type=int, default=16, help='number of images for W&B logging, max 100')
     parser.add_argument('--log-artifacts', action='store_true', help='log artifacts, i.e. final trained model')
-    parser.add_argument('--workers', type=int, default=8, help='maximum number of dataloader workers')
+    parser.add_argument('--workers', type=int, default=10, help='maximum number of dataloader workers')
     parser.add_argument('--project', default='runs/train', help='save to project/name')
     parser.add_argument('--name', default='exp', help='save to project/name')
     parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
@@ -528,7 +528,7 @@ if __name__ == '__main__':
                 'obj_pw': (1, 0.5, 2.0),  # obj BCELoss positive_weight
                 'iou_t': (0, 0.1, 0.7),  # IoU training threshold
                 'anchor_t': (1, 2.0, 8.0),  # anchor-multiple threshold
-                'anchors': (2, 2.0, 10.0),  # anchors per output grid (0 to ignore)
+                # 'anchors': (2, 2.0, 10.0),  # anchors per output grid (0 to ignore)
                 'fl_gamma': (0, 0.0, 2.0),  # focal loss gamma (efficientDet default gamma=1.5)
                 'hsv_h': (1, 0.0, 0.1),  # image HSV-Hue augmentation (fraction)
                 'hsv_s': (1, 0.0, 0.9),  # image HSV-Saturation augmentation (fraction)
@@ -550,6 +550,7 @@ if __name__ == '__main__':
         if opt.bucket:
             os.system('gsutil cp gs://%s/evolve.txt .' % opt.bucket)  # download evolve.txt if exists
 
+# edit range for evolve hype
         for _ in range(300):  # generations to evolve
             if Path('evolve.txt').exists():  # if evolve.txt exists: select best hyps and mutate
                 # Select parent(s)
